@@ -34,9 +34,64 @@ def on_down_pressed():
         False)
 controller.down.on_event(ControllerButtonEvent.PRESSED, on_down_pressed)
 
+house_bottom = 0
+house_top = 0
+house_right = 0
+house_left = 0
 nena: Sprite = None
-nena.set_stay_in_screen(True)
 MODE_GAME = 0
+casa = sprites.create(img("""
+        ....................8a8aa8a8....................
+        .................aaa888aa8a8aaa.................
+        ..............aaa8aa8a8aa888aa8aaa..............
+        ...........8aa8aa8888a8aa8a8888aa8aa8...........
+        ........8888aa8aa8aa8a8aa8a8aa8aa8aa8888........
+        .....aaa8aa8aa8888aa8a8aa8a8aa8888aa8aa8aaa.....
+        ...aa8888aa8aa8aa8aa888aa888aa8aa8aa8aa8888aa...
+        dccaa8aa8aa8888aa8aa8a8aa8a8aa8aa8888aa8aa8aaccd
+        bcb888aa8aa8aa8aa8aa8a8aa8a8aa8aa8aa8aa8aa888bcb
+        dbbaa8aa8888aa8aa8888a8aa8a8888aa8aa8888aa8aabbd
+        dbbaa8aa8aa8aa8888aa8a8aa8a8aa8888aa8aa8aa8aabbd
+        dccaa8888aa8aa8aa8aa888aa888aa8aa8aa8aa8888aaccd
+        bcbaa8aa8aa8888aa8aa8a8aa8a8aa8aa8888aa8aa8aabcb
+        dbb888aa8aa8aa8aa8aa8a8aa8a8aa8aa8aa8aa8aa888bbd
+        dbbaa8aa8888aa8aa8aa8a8aa8a8aa8aa8aa8888aa8aabbd
+        dccaa8aa8aa8aa8aa8888a8aa8a8888aa8aa8aa8aa8aaccd
+        bcbaa8888aa8aa8888aa888aa888aa8888aa8aa8888aabcb
+        dbbaa8aa8aa8888aa8aa8a8aa8a8aa8aa8888aa8aa8aabbd
+        dbb888aa8aa8aa8aa8aa8a8aa8a8aa8aa8aa8aa8aa888bbd
+        dccaa8aa8888aa8aa8aa8a8aa8a8aa8aa8aa8888aa8aaccd
+        bcbaa8aa8aa8aa8aa8aa888aa888aa8aa8aa8aa8aa8aabcb
+        dbbaa8888aa8aa8aa888ccbbbbcc888aa8aa8aa8888aabbd
+        dbbaa8aa8aa8aa888ccbbbbbbbbbbcc888aa8aa8aa8aabbd
+        dcc888aa8aa888ccbbbbbccccccbbbbbcc888aa8aa888ccd
+        bcbaa8aa888ccbbbbbccbddddddbccbbbbbcc888aa8aabcb
+        dbbaa8aaccbbbbbccbddddddddddddbccbbbbbccaa8aabbd
+        dbbaaccbbbbcccbddddddddddddddddddbcccbbbbccaabbd
+        dcccbbbbcccbdddbccbbbbbbbbbbbbccbdddbcccbbbbcccd
+        ccccccccbbbbbbbcbddddddddddddddbcbbbbbbbcccccccc
+        bddddddddddddbcddddddddddddddddddcbddddddddddddb
+        bbcbdddddddddcbd1111111111111111dbcdddddddddbcbb
+        bbbcccccccccccd1bbbbbbbbbbbbbbbb1dcccccccccccbbb
+        bbbbdddddddddc11beeeeeeeeeeeeeeb11cdddddddddbbbb
+        bbb8aaaaaaa8dc1be3b33b33b33b33beb1cd8aaaaaaa8bbb
+        bbb888888888dc1be3b33b33b33b33beb1cd888888888bbb
+        bbb833333338dcbbf3b3effffffe33bebbcd833333338bbb
+        bbb83ff3ff38dcbbf3bffffffffff3bebbcd83ff3ff38bbb
+        bbb83cc3cc38dcbbf3effffffffffebebbcd83cc3cc38bbb
+        bbb833333338dcbbf3eeeeeeeeeeeebebbcd833333338bbb
+        cbb83ff3ff38dcbbe3b33b33b33b33bebbcd83ff3ff38bbc
+        cbb83cc3cc38dcbbe3b33b33b33b33bebbcd83cc3cc38bbc
+        ccbbbbbbbbbbdcbbe3b33b33b33feeeebbcdbbbbbbbbbbcc
+        .cbbdddddddddcbbe3b33b33b33ffffebbcdddddddddbbc.
+        ..cbdbbbdbbbdcbbf3b33b33b33f33febbcdbbbdbbbdbc..
+        ...cdbbbdbbbdcbbf3b33b33b33bffeebbcdbbbdbbbdc...
+        ....bddddddddcbbf3b33b33b33b33bebbcddddddddb....
+        .....bdbbbdddcbbf3b33b33b33b33bebbcdddbbbdb.....
+        ......bcccbbbcbbe3b33b33b33b33bebbcbbbcccb......
+        """),
+    SpriteKind.player)
+casa.set_position(26, 87)
 scene.set_background_image(img("""
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
@@ -206,16 +261,49 @@ a13 = sprites.create(assets.image("""
     forestTree1
     """), SpriteKind.player)
 a13.set_position(145, 31)
-a12 = sprites.create(assets.image("""
-    forestTree1
-    """), SpriteKind.player)
+a12 = sprites.create(assets.image("""forestTree1"""), SpriteKind.player)
 a12.set_position(155, 31)
 nena = sprites.create(assets.image("""
     nena-front
     """), SpriteKind.player)
+nena.set_stay_in_screen(True)
 controller.move_sprite(nena, 100, 100)
 LLENYA_PER_GALLINA = 6
 LLENYA_PER_PATATA = 2 / 1.5
 LLENYA_PER_CABRA = 5
 LLENYA_PER_OUS = 3 / 12
 LLENYA_PER_CAVALL = 12
+
+def on_on_update():
+    global house_left, house_right, house_top, house_bottom
+
+    if nena.y < 40:
+        nena.y = 40
+
+    house_left = casa.x - 20
+    house_right = casa.x + 20
+    house_top = casa.y - 20
+    house_bottom = casa.y + 20
+    
+    if (nena.x > house_left and nena.x < house_right and
+        nena.y > house_top and nena.y < house_bottom):
+        
+        dist_left = abs(nena.x - house_left)
+        dist_right = abs(nena.x - house_right)
+        dist_top = abs(nena.y - house_top)
+        dist_bottom = abs(nena.y - house_bottom)
+        
+        min_horizontal = min(dist_left, dist_right)
+        min_vertical = min(dist_top, dist_bottom)
+        min_dist = min(min_horizontal, min_vertical)
+        
+        if min_dist == dist_left:
+            nena.x = house_left - 5
+        elif min_dist == dist_right:
+            nena.x = house_right + 5
+        elif min_dist == dist_top:
+            nena.y = house_top - 5
+        elif min_dist == dist_bottom:
+            nena.y = house_bottom + 5
+
+game.on_update(on_on_update)
