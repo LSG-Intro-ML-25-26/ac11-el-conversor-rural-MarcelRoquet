@@ -1,3 +1,22 @@
+LLENYA_PER_GALLINA = 6
+LLENYA_PER_PATATA = 2 / 1.5
+LLENYA_PER_CABRA = 5
+LLENYA_PER_OUS = 3 / 12
+LLENYA_PER_CAVALL = 12
+
+gallines = 0
+kg_llenya = 0
+ous = 0
+cabres = 0
+caballs = 0
+patates = 0
+
+house_bottom = 0
+house_top = 0
+house_right = 0
+house_left = 0
+
+
 def on_up_pressed():
     animation.run_image_animation(nena,
         assets.animation("""
@@ -8,20 +27,71 @@ def on_up_pressed():
 controller.up.on_event(ControllerButtonEvent.PRESSED, on_up_pressed)
 
 def on_a_pressed():
+    global BackPack, myMenu
+    BackPack = [miniMenu.create_menu_item("Gallina"),
+        miniMenu.create_menu_item("Patata"),
+        miniMenu.create_menu_item("Cabra"),
+        miniMenu.create_menu_item("Ous"),
+        miniMenu.create_menu_item("Caball"),
+        miniMenu.create_menu_item("Tancar Menú")]
+    myMenu = miniMenu.create_menu_from_array(BackPack)
+    myMenu.set_title("Conversor")
+    myMenu.set_position(69, 48)
     
     def on_button_pressed(selection, selectedIndex):
-        global BackPack, myMenu
-        BackPack = [miniMenu.create_menu_item("Gallina"),
-            miniMenu.create_menu_item("Patata"),
-            miniMenu.create_menu_item("Cabra"),
-            miniMenu.create_menu_item("Ous"),
-            miniMenu.create_menu_item("Caball"),
-            miniMenu.create_menu_item("Tancar Menú")]
-        myMenu = miniMenu.create_menu_from_array(BackPack)
-        myMenu.set_title("Conversor")
-        myMenu.set_dimensions(100, 100)
-    myMenu.on_button_pressed(controller.A, on_button_pressed)
+        myMenu.close()
+    myMenu.on_button_pressed(controller.B, on_button_pressed)
     
+    myMenu.set_frame(img("""
+        999999999999999999999999999999999999999999999999
+        999988899999999999998889999999999999888999999999
+        998888888999888899888888899988889988888889998889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988888888888888888888888888888888888888888888889
+        988688888888888888888888888888888888888886888889
+        988688888888688888888888888888888868888866888889
+        988668888888668888888888888888888868888886888689
+        966688888888688888888888888688888866888866688689
+        986668888886668888688888888688888668888866886689
+        988666888888688888688888886668888866888666688689
+        966688888866666888668888886688888866688866886669
+        986666888866668886666888866666886668888666686689
+        986666888866668888668888886688888666888666666669
+        966668888666666886666888866666886666866666666669
+        986688886666668886666888666668886666666666666669
+        966666688666666666666666666666666666666666666669
+        966666886666666666666666666666666666666666666669
+        966666666666666666666666666666666666666666666669
+        999999999999999999999999999999999999999999999999
+        """))
 controller.A.on_event(ControllerButtonEvent.PRESSED, on_a_pressed)
 
 def on_left_pressed():
@@ -51,12 +121,8 @@ def on_down_pressed():
         False)
 controller.down.on_event(ControllerButtonEvent.PRESSED, on_down_pressed)
 
-house_bottom = 0
-house_top = 0
-house_right = 0
-house_left = 0
-BackPack: List[miniMenu.MenuItem] = []
 myMenu: miniMenu.MenuSprite = None
+BackPack: List[miniMenu.MenuItem] = []
 nena: Sprite = None
 MODE_GAME = 0
 casa = sprites.create(img("""
@@ -289,18 +355,15 @@ nena = sprites.create(assets.image("""
     """), SpriteKind.player)
 nena.set_stay_in_screen(True)
 controller.move_sprite(nena, 100, 100)
-LLENYA_PER_GALLINA = 6
-LLENYA_PER_PATATA = 2 / 1.5
-LLENYA_PER_CABRA = 5
-LLENYA_PER_OUS = 3 / 12
-LLENYA_PER_CAVALL = 12
+
+
 
 def on_on_update():
     global house_left, house_right, house_top, house_bottom
     if nena.y < 40:
         nena.y = 40
-    house_left = casa.x - 20
-    house_right = casa.x + 20
+    house_left = casa.x - 23
+    house_right = casa.x + 23
     house_top = casa.y - 20
     house_bottom = casa.y + 20
     if nena.x > house_left and nena.x < house_right and nena.y > house_top and nena.y < house_bottom:
@@ -320,3 +383,26 @@ def on_on_update():
         elif min_dist == dist_bottom:
             nena.y = house_bottom + 5
 game.on_update(on_on_update)
+
+def fer_intercanvi(opcio: str):
+    global kg_llenya, gallines, cabres, ous, caballs, patates
+
+    if opcio == "Gallina" and kg_llenya >= LLENYA_PER_GALLINA:
+        kg_llenya -= LLENYA_PER_GALLINA
+        gallines += 1
+
+    elif opcio == "Patata" and kg_llenya >= 2:
+        kg_llenya -= 2
+        patates += 1.5
+
+    elif opcio == "Cabra" and kg_llenya >= LLENYA_PER_CABRA:
+        kg_llenya -= LLENYA_PER_CABRA
+        cabres += 1
+
+    elif opcio == "Ous" and kg_llenya >= 3:
+        kg_llenya -= 3
+        ous += 12
+
+    elif opcio == "Caball" and kg_llenya >= LLENYA_PER_CAVALL:
+        kg_llenya -= LLENYA_PER_CAVALL
+        caballs += 1
