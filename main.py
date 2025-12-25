@@ -7,6 +7,23 @@ def on_up_pressed():
         False)
 controller.up.on_event(ControllerButtonEvent.PRESSED, on_up_pressed)
 
+def on_a_pressed():
+    
+    def on_button_pressed(selection, selectedIndex):
+        global BackPack, myMenu
+        BackPack = [miniMenu.create_menu_item("Gallina"),
+            miniMenu.create_menu_item("Patata"),
+            miniMenu.create_menu_item("Cabra"),
+            miniMenu.create_menu_item("Ous"),
+            miniMenu.create_menu_item("Caball"),
+            miniMenu.create_menu_item("Tancar Menú")]
+        myMenu = miniMenu.create_menu_from_array(BackPack)
+        myMenu.set_title("Conversor")
+        myMenu.set_dimensions(100, 100)
+    myMenu.on_button_pressed(controller.A, on_button_pressed)
+    
+controller.A.on_event(ControllerButtonEvent.PRESSED, on_a_pressed)
+
 def on_left_pressed():
     animation.run_image_animation(nena,
         assets.animation("""
@@ -38,6 +55,8 @@ house_bottom = 0
 house_top = 0
 house_right = 0
 house_left = 0
+BackPack: List[miniMenu.MenuItem] = []
+myMenu: miniMenu.MenuSprite = None
 nena: Sprite = None
 MODE_GAME = 0
 casa = sprites.create(img("""
@@ -261,7 +280,9 @@ a13 = sprites.create(assets.image("""
     forestTree1
     """), SpriteKind.player)
 a13.set_position(145, 31)
-a12 = sprites.create(assets.image("""forestTree1"""), SpriteKind.player)
+a12 = sprites.create(assets.image("""
+    forestTree1
+    """), SpriteKind.player)
 a12.set_position(155, 31)
 nena = sprites.create(assets.image("""
     nena-front
@@ -276,27 +297,20 @@ LLENYA_PER_CAVALL = 12
 
 def on_on_update():
     global house_left, house_right, house_top, house_bottom
-
     if nena.y < 40:
         nena.y = 40
-
     house_left = casa.x - 20
     house_right = casa.x + 20
     house_top = casa.y - 20
     house_bottom = casa.y + 20
-    
-    if (nena.x > house_left and nena.x < house_right and
-        nena.y > house_top and nena.y < house_bottom):
-        
+    if nena.x > house_left and nena.x < house_right and nena.y > house_top and nena.y < house_bottom:
         dist_left = abs(nena.x - house_left)
         dist_right = abs(nena.x - house_right)
         dist_top = abs(nena.y - house_top)
         dist_bottom = abs(nena.y - house_bottom)
-        
         min_horizontal = min(dist_left, dist_right)
         min_vertical = min(dist_top, dist_bottom)
         min_dist = min(min_horizontal, min_vertical)
-        
         if min_dist == dist_left:
             nena.x = house_left - 5
         elif min_dist == dist_right:
@@ -305,5 +319,4 @@ def on_on_update():
             nena.y = house_top - 5
         elif min_dist == dist_bottom:
             nena.y = house_bottom + 5
-
 game.on_update(on_on_update)

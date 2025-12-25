@@ -1,79 +1,109 @@
-controller.up.onEvent(ControllerButtonEvent.Pressed, function on_up_pressed() {
-    animation.runImageAnimation(nena, assets.animation`
-            nena-animation-up
-            `, 500, false)
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    animation.runImageAnimation(
+    nena,
+    assets.animation`nena-animation-up`,
+    500,
+    false
+    )
 })
-controller.left.onEvent(ControllerButtonEvent.Pressed, function on_left_pressed() {
-    animation.runImageAnimation(nena, assets.animation`
-            nena-animation-right
-            `, 500, false)
+controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+    BackPack = [
+    miniMenu.createMenuItem("Gallina"),
+    miniMenu.createMenuItem("Patata"),
+    miniMenu.createMenuItem("Cabra"),
+    miniMenu.createMenuItem("Ous"),
+    miniMenu.createMenuItem("Caball"),
+    miniMenu.createMenuItem("Tancar Menú")
+    ]
+    myMenu = miniMenu.createMenuFromArray(BackPack)
+    myMenu.setTitle("Conversor")
+    myMenu.setDimensions(100, 100)
+    myMenu.onButtonPressed(controller.menu, function (selection, selectedIndex) {
+        myMenu.close()
+    })
 })
-controller.right.onEvent(ControllerButtonEvent.Pressed, function on_right_pressed() {
-    animation.runImageAnimation(nena, assets.animation`
-            nena-animation-left
-            `, 500, false)
+controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
+    animation.runImageAnimation(
+    nena,
+    assets.animation`nena-animation-right`,
+    500,
+    false
+    )
 })
-controller.down.onEvent(ControllerButtonEvent.Pressed, function on_down_pressed() {
-    animation.runImageAnimation(nena, assets.animation`
-            nena-animation-down
-            `, 500, false)
+controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
+    animation.runImageAnimation(
+    nena,
+    assets.animation`nena-animation-left`,
+    500,
+    false
+    )
+})
+controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
+    animation.runImageAnimation(
+    nena,
+    assets.animation`nena-animation-down`,
+    500,
+    false
+    )
 })
 let house_bottom = 0
 let house_top = 0
 let house_right = 0
 let house_left = 0
-let nena : Sprite = null
+let myMenu: miniMenu.MenuSprite = null
+let BackPack: miniMenu.MenuItem[] = []
+let nena: Sprite = null
 let MODE_GAME = 0
 let casa = sprites.create(img`
-        ....................8a8aa8a8....................
-        .................aaa888aa8a8aaa.................
-        ..............aaa8aa8a8aa888aa8aaa..............
-        ...........8aa8aa8888a8aa8a8888aa8aa8...........
-        ........8888aa8aa8aa8a8aa8a8aa8aa8aa8888........
-        .....aaa8aa8aa8888aa8a8aa8a8aa8888aa8aa8aaa.....
-        ...aa8888aa8aa8aa8aa888aa888aa8aa8aa8aa8888aa...
-        dccaa8aa8aa8888aa8aa8a8aa8a8aa8aa8888aa8aa8aaccd
-        bcb888aa8aa8aa8aa8aa8a8aa8a8aa8aa8aa8aa8aa888bcb
-        dbbaa8aa8888aa8aa8888a8aa8a8888aa8aa8888aa8aabbd
-        dbbaa8aa8aa8aa8888aa8a8aa8a8aa8888aa8aa8aa8aabbd
-        dccaa8888aa8aa8aa8aa888aa888aa8aa8aa8aa8888aaccd
-        bcbaa8aa8aa8888aa8aa8a8aa8a8aa8aa8888aa8aa8aabcb
-        dbb888aa8aa8aa8aa8aa8a8aa8a8aa8aa8aa8aa8aa888bbd
-        dbbaa8aa8888aa8aa8aa8a8aa8a8aa8aa8aa8888aa8aabbd
-        dccaa8aa8aa8aa8aa8888a8aa8a8888aa8aa8aa8aa8aaccd
-        bcbaa8888aa8aa8888aa888aa888aa8888aa8aa8888aabcb
-        dbbaa8aa8aa8888aa8aa8a8aa8a8aa8aa8888aa8aa8aabbd
-        dbb888aa8aa8aa8aa8aa8a8aa8a8aa8aa8aa8aa8aa888bbd
-        dccaa8aa8888aa8aa8aa8a8aa8a8aa8aa8aa8888aa8aaccd
-        bcbaa8aa8aa8aa8aa8aa888aa888aa8aa8aa8aa8aa8aabcb
-        dbbaa8888aa8aa8aa888ccbbbbcc888aa8aa8aa8888aabbd
-        dbbaa8aa8aa8aa888ccbbbbbbbbbbcc888aa8aa8aa8aabbd
-        dcc888aa8aa888ccbbbbbccccccbbbbbcc888aa8aa888ccd
-        bcbaa8aa888ccbbbbbccbddddddbccbbbbbcc888aa8aabcb
-        dbbaa8aaccbbbbbccbddddddddddddbccbbbbbccaa8aabbd
-        dbbaaccbbbbcccbddddddddddddddddddbcccbbbbccaabbd
-        dcccbbbbcccbdddbccbbbbbbbbbbbbccbdddbcccbbbbcccd
-        ccccccccbbbbbbbcbddddddddddddddbcbbbbbbbcccccccc
-        bddddddddddddbcddddddddddddddddddcbddddddddddddb
-        bbcbdddddddddcbd1111111111111111dbcdddddddddbcbb
-        bbbcccccccccccd1bbbbbbbbbbbbbbbb1dcccccccccccbbb
-        bbbbdddddddddc11beeeeeeeeeeeeeeb11cdddddddddbbbb
-        bbb8aaaaaaa8dc1be3b33b33b33b33beb1cd8aaaaaaa8bbb
-        bbb888888888dc1be3b33b33b33b33beb1cd888888888bbb
-        bbb833333338dcbbf3b3effffffe33bebbcd833333338bbb
-        bbb83ff3ff38dcbbf3bffffffffff3bebbcd83ff3ff38bbb
-        bbb83cc3cc38dcbbf3effffffffffebebbcd83cc3cc38bbb
-        bbb833333338dcbbf3eeeeeeeeeeeebebbcd833333338bbb
-        cbb83ff3ff38dcbbe3b33b33b33b33bebbcd83ff3ff38bbc
-        cbb83cc3cc38dcbbe3b33b33b33b33bebbcd83cc3cc38bbc
-        ccbbbbbbbbbbdcbbe3b33b33b33feeeebbcdbbbbbbbbbbcc
-        .cbbdddddddddcbbe3b33b33b33ffffebbcdddddddddbbc.
-        ..cbdbbbdbbbdcbbf3b33b33b33f33febbcdbbbdbbbdbc..
-        ...cdbbbdbbbdcbbf3b33b33b33bffeebbcdbbbdbbbdc...
-        ....bddddddddcbbf3b33b33b33b33bebbcddddddddb....
-        .....bdbbbdddcbbf3b33b33b33b33bebbcdddbbbdb.....
-        ......bcccbbbcbbe3b33b33b33b33bebbcbbbcccb......
-        `, SpriteKind.Player)
+    ....................8a8aa8a8....................
+    .................aaa888aa8a8aaa.................
+    ..............aaa8aa8a8aa888aa8aaa..............
+    ...........8aa8aa8888a8aa8a8888aa8aa8...........
+    ........8888aa8aa8aa8a8aa8a8aa8aa8aa8888........
+    .....aaa8aa8aa8888aa8a8aa8a8aa8888aa8aa8aaa.....
+    ...aa8888aa8aa8aa8aa888aa888aa8aa8aa8aa8888aa...
+    dccaa8aa8aa8888aa8aa8a8aa8a8aa8aa8888aa8aa8aaccd
+    bcb888aa8aa8aa8aa8aa8a8aa8a8aa8aa8aa8aa8aa888bcb
+    dbbaa8aa8888aa8aa8888a8aa8a8888aa8aa8888aa8aabbd
+    dbbaa8aa8aa8aa8888aa8a8aa8a8aa8888aa8aa8aa8aabbd
+    dccaa8888aa8aa8aa8aa888aa888aa8aa8aa8aa8888aaccd
+    bcbaa8aa8aa8888aa8aa8a8aa8a8aa8aa8888aa8aa8aabcb
+    dbb888aa8aa8aa8aa8aa8a8aa8a8aa8aa8aa8aa8aa888bbd
+    dbbaa8aa8888aa8aa8aa8a8aa8a8aa8aa8aa8888aa8aabbd
+    dccaa8aa8aa8aa8aa8888a8aa8a8888aa8aa8aa8aa8aaccd
+    bcbaa8888aa8aa8888aa888aa888aa8888aa8aa8888aabcb
+    dbbaa8aa8aa8888aa8aa8a8aa8a8aa8aa8888aa8aa8aabbd
+    dbb888aa8aa8aa8aa8aa8a8aa8a8aa8aa8aa8aa8aa888bbd
+    dccaa8aa8888aa8aa8aa8a8aa8a8aa8aa8aa8888aa8aaccd
+    bcbaa8aa8aa8aa8aa8aa888aa888aa8aa8aa8aa8aa8aabcb
+    dbbaa8888aa8aa8aa888ccbbbbcc888aa8aa8aa8888aabbd
+    dbbaa8aa8aa8aa888ccbbbbbbbbbbcc888aa8aa8aa8aabbd
+    dcc888aa8aa888ccbbbbbccccccbbbbbcc888aa8aa888ccd
+    bcbaa8aa888ccbbbbbccbddddddbccbbbbbcc888aa8aabcb
+    dbbaa8aaccbbbbbccbddddddddddddbccbbbbbccaa8aabbd
+    dbbaaccbbbbcccbddddddddddddddddddbcccbbbbccaabbd
+    dcccbbbbcccbdddbccbbbbbbbbbbbbccbdddbcccbbbbcccd
+    ccccccccbbbbbbbcbddddddddddddddbcbbbbbbbcccccccc
+    bddddddddddddbcddddddddddddddddddcbddddddddddddb
+    bbcbdddddddddcbd1111111111111111dbcdddddddddbcbb
+    bbbcccccccccccd1bbbbbbbbbbbbbbbb1dcccccccccccbbb
+    bbbbdddddddddc11beeeeeeeeeeeeeeb11cdddddddddbbbb
+    bbb8aaaaaaa8dc1be3b33b33b33b33beb1cd8aaaaaaa8bbb
+    bbb888888888dc1be3b33b33b33b33beb1cd888888888bbb
+    bbb833333338dcbbf3b3effffffe33bebbcd833333338bbb
+    bbb83ff3ff38dcbbf3bffffffffff3bebbcd83ff3ff38bbb
+    bbb83cc3cc38dcbbf3effffffffffebebbcd83cc3cc38bbb
+    bbb833333338dcbbf3eeeeeeeeeeeebebbcd833333338bbb
+    cbb83ff3ff38dcbbe3b33b33b33b33bebbcd83ff3ff38bbc
+    cbb83cc3cc38dcbbe3b33b33b33b33bebbcd83cc3cc38bbc
+    ccbbbbbbbbbbdcbbe3b33b33b33feeeebbcdbbbbbbbbbbcc
+    .cbbdddddddddcbbe3b33b33b33ffffebbcdddddddddbbc.
+    ..cbdbbbdbbbdcbbf3b33b33b33f33febbcdbbbdbbbdbc..
+    ...cdbbbdbbbdcbbf3b33b33b33bffeebbcdbbbdbbbdc...
+    ....bddddddddcbbf3b33b33b33b33bebbcddddddddb....
+    .....bdbbbdddcbbf3b33b33b33b33bebbcdddbbbdb.....
+    ......bcccbbbcbbe3b33b33b33b33bebbcbbbcccb......
+    `, SpriteKind.Player)
 casa.setPosition(26, 87)
 scene.setBackgroundImage(img`
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
@@ -200,55 +230,31 @@ scene.setBackgroundImage(img`
 let MODE_MENU2 = 1
 let MODE_INVENTORY = 2
 let mode_joc2 = MODE_GAME
-let arbre2 = sprites.create(assets.image`
-    forestTree1
-    `, SpriteKind.Player)
+let arbre2 = sprites.create(assets.image`forestTree1`, SpriteKind.Player)
 arbre2.setPosition(4, 31)
-let a3 = sprites.create(assets.image`
-    forestTree1
-    `, SpriteKind.Player)
+let a3 = sprites.create(assets.image`forestTree1`, SpriteKind.Player)
 a3.setPosition(15, 31)
-let a10 = sprites.create(assets.image`
-    forestTree1
-    `, SpriteKind.Player)
+let a10 = sprites.create(assets.image`forestTree1`, SpriteKind.Player)
 a10.setPosition(30, 31)
-let a11 = sprites.create(assets.image`
-    forestTree1
-    `, SpriteKind.Player)
+let a11 = sprites.create(assets.image`forestTree1`, SpriteKind.Player)
 a11.setPosition(45, 31)
-let a4 = sprites.create(assets.image`
-    forestTree1
-    `, SpriteKind.Player)
+let a4 = sprites.create(assets.image`forestTree1`, SpriteKind.Player)
 a4.setPosition(60, 31)
-let a5 = sprites.create(assets.image`
-    forestTree1
-    `, SpriteKind.Player)
+let a5 = sprites.create(assets.image`forestTree1`, SpriteKind.Player)
 a5.setPosition(70, 31)
-let a6 = sprites.create(assets.image`
-    forestTree1
-    `, SpriteKind.Player)
+let a6 = sprites.create(assets.image`forestTree1`, SpriteKind.Player)
 a6.setPosition(85, 31)
-let a7 = sprites.create(assets.image`
-    forestTree1
-    `, SpriteKind.Player)
+let a7 = sprites.create(assets.image`forestTree1`, SpriteKind.Player)
 a7.setPosition(100, 31)
-let a8 = sprites.create(assets.image`
-    forestTree1
-    `, SpriteKind.Player)
+let a8 = sprites.create(assets.image`forestTree1`, SpriteKind.Player)
 a8.setPosition(115, 31)
-let a9 = sprites.create(assets.image`
-    forestTree1
-    `, SpriteKind.Player)
+let a9 = sprites.create(assets.image`forestTree1`, SpriteKind.Player)
 a9.setPosition(130, 31)
-let a13 = sprites.create(assets.image`
-    forestTree1
-    `, SpriteKind.Player)
+let a13 = sprites.create(assets.image`forestTree1`, SpriteKind.Player)
 a13.setPosition(145, 31)
 let a12 = sprites.create(assets.image`forestTree1`, SpriteKind.Player)
 a12.setPosition(155, 31)
-nena = sprites.create(assets.image`
-    nena-front
-    `, SpriteKind.Player)
+nena = sprites.create(assets.image`nena-front`, SpriteKind.Player)
 nena.setStayInScreen(true)
 controller.moveSprite(nena, 100, 100)
 let LLENYA_PER_GALLINA = 6
@@ -256,19 +262,17 @@ let LLENYA_PER_PATATA = 2 / 1.5
 let LLENYA_PER_CABRA = 5
 let LLENYA_PER_OUS = 3 / 12
 let LLENYA_PER_CAVALL = 12
-game.onUpdate(function on_on_update() {
+game.onUpdate(function () {
     let dist_left: number;
-    let dist_right: number;
-    let dist_top: number;
-    let dist_bottom: number;
-    let min_horizontal: number;
-    let min_vertical: number;
-    let min_dist: number;
-    
-    if (nena.y < 40) {
+let dist_right: number;
+let dist_top: number;
+let dist_bottom: number;
+let min_horizontal: number;
+let min_vertical: number;
+let min_dist: number;
+if (nena.y < 40) {
         nena.y = 40
     }
-    
     house_left = casa.x - 20
     house_right = casa.x + 20
     house_top = casa.y - 20
@@ -290,7 +294,5 @@ game.onUpdate(function on_on_update() {
         } else if (min_dist == dist_bottom) {
             nena.y = house_bottom + 5
         }
-        
     }
-    
 })
