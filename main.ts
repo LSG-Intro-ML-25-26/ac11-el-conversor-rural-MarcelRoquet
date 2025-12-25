@@ -1,88 +1,73 @@
-let LLENYA_PER_GALLINA = 6
-let LLENYA_PER_PATATA = 2 / 1.5
-let LLENYA_PER_CABRA = 5
-let LLENYA_PER_OUS = 3 / 12
-let LLENYA_PER_CAVALL = 12
-let gallines = 0
-let kg_llenya = 0
-let ous = 0
-let cabres = 0
-let caballs = 0
-let patates = 0
-let house_bottom = 0
-let house_top = 0
-let house_right = 0
-let house_left = 0
 controller.up.onEvent(ControllerButtonEvent.Pressed, function on_up_pressed() {
     animation.runImageAnimation(nena, assets.animation`
             nena-animation-up
             `, 500, false)
 })
+function obrir_menu_quantitat(producte: string) {
+    
+    let items : miniMenu.MenuItem[] = []
+    producte_seleccionat = producte
+    //  opcions de intercanvi
+    opcions_vals = [1, 2, 3, 5, 10]
+    opcions_text = ["1", "2", "3", "5", "10", "Tornar"]
+    for (let opcio of opcions_text) {
+        items.push(miniMenu.createMenuItem(opcio))
+    }
+    menu_quantitat = miniMenu.createMenuFromArray(items)
+    menu_quantitat.setTitle("Quantitat de " + producte)
+    menu_quantitat.setPosition(70, 50)
+    menu_quantitat.onButtonPressed(controller.A, function on_button_pressed(selection: any, selected_index: number) {
+        
+        menu_quantitat.close()
+        if (selected_index == 5) {
+            return
+        }
+        
+        quantitat2 = opcions_vals[selected_index]
+        fer_intercanvi_amb_quantitat(producte, quantitat2)
+    })
+    menu_quantitat.onButtonPressed(controller.B, function on_button_pressed2(selection2: any, selected_index2: any) {
+        menu_quantitat.close()
+    })
+}
+
 controller.A.onEvent(ControllerButtonEvent.Pressed, function on_a_pressed() {
     
-    BackPack = [miniMenu.createMenuItem("Gallina"), miniMenu.createMenuItem("Patata"), miniMenu.createMenuItem("Cabra"), miniMenu.createMenuItem("Ous"), miniMenu.createMenuItem("Caball"), miniMenu.createMenuItem("Tancar Menú")]
-    myMenu = miniMenu.createMenuFromArray(BackPack)
-    myMenu.setTitle("Conversor")
+    let items2 : miniMenu.MenuItem[] = []
+    labels = ["Gallina", "Patata", "Cabra", "Ous", "Caball", "Veure Inventari", "Tancar Menú"]
+    for (let l of labels) {
+        items2.push(miniMenu.createMenuItem(l))
+    }
+    myMenu = miniMenu.createMenuFromArray(items2)
+    myMenu.setTitle("CONVERSOR RURAL")
     myMenu.setPosition(69, 48)
-    myMenu.onButtonPressed(controller.B, function on_button_pressed(selection: any, selectedIndex: any) {
+    myMenu.onButtonPressed(controller.A, function on_button_pressed3(selection3: any, selectedIndex: number) {
+        
+        opcio2 = labels[selectedIndex]
+        if (opcio2 == "Tancar Menú") {
+            myMenu.close()
+        } else if (opcio2 == "Veure Inventari") {
+            myMenu.close()
+            mostrar_inventari()
+        } else {
+            myMenu.close()
+            obrir_menu_quantitat(opcio2)
+        }
+        
+    })
+    myMenu.onButtonPressed(controller.B, function on_button_pressed4(selection22: any, selectedIndex2: any) {
         myMenu.close()
     })
-    myMenu.setFrame(img`
-        999999999999999999999999999999999999999999999999
-        999988899999999999998889999999999999888999999999
-        998888888999888899888888899988889988888889998889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988888888888888888888888888888888888888888888889
-        988688888888888888888888888888888888888886888889
-        988688888888688888888888888888888868888866888889
-        988668888888668888888888888888888868888886888689
-        966688888888688888888888888688888866888866688689
-        986668888886668888688888888688888668888866886689
-        988666888888688888688888886668888866888666688689
-        966688888866666888668888886688888866688866886669
-        986666888866668886666888866666886668888666686689
-        986666888866668888668888886688888666888666666669
-        966668888666666886666888866666886666866666666669
-        986688886666668886666888666668886666666666666669
-        966666688666666666666666666666666666666666666669
-        966666886666666666666666666666666666666666666669
-        966666666666666666666666666666666666666666666669
-        999999999999999999999999999999999999999999999999
-        `)
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function on_left_pressed() {
     animation.runImageAnimation(nena, assets.animation`
             nena-animation-right
             `, 500, false)
 })
+function mostrar_missatge(text: string) {
+    game.showLongText(text, DialogLayout.Bottom)
+}
+
 controller.right.onEvent(ControllerButtonEvent.Pressed, function on_right_pressed() {
     animation.runImageAnimation(nena, assets.animation`
             nena-animation-left
@@ -93,10 +78,126 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function on_down_pressed(
             nena-animation-down
             `, 500, false)
 })
+function mostrar_inventari() {
+    let info_text = "TEU INVENTARI\n"
+    info_text = "" + info_text + "══════════════════\n"
+    info_text = "" + info_text + "Llenya: " + ("" + ("" + Math.roundWithPrecision(kg_llenya, 2))) + " kg\n"
+    info_text = "" + info_text + "Gallines: " + ("" + ("" + gallines)) + "\n"
+    info_text = "" + info_text + "Patates: " + ("" + ("" + Math.roundWithPrecision(patates, 2))) + " kg\n"
+    info_text = "" + info_text + "Cabres: " + ("" + ("" + cabres)) + "\n"
+    info_text = "" + info_text + "Ous: " + ("" + ("" + ous)) + "\n"
+    info_text = "" + info_text + "Cavalls: " + ("" + ("" + caballs)) + "\n"
+    info_text = "" + info_text + "══════════════════"
+    game.showLongText(info_text, DialogLayout.Full)
+}
+
+function fer_intercanvi_amb_quantitat(producte2: string, quantitat: number) {
+    let llenya_necesaria: number;
+    
+    if (producte2 == "Gallina") {
+        llenya_necesaria = quantitat * LLENYA_PER_GALLINA
+    } else if (producte2 == "Patata") {
+        llenya_necesaria = quantitat * 2
+    } else if (producte2 == "Cabra") {
+        llenya_necesaria = quantitat * LLENYA_PER_CABRA
+    } else if (producte2 == "Ous") {
+        llenya_necesaria = quantitat * 3 / 12
+    } else if (producte2 == "Caball") {
+        llenya_necesaria = quantitat * LLENYA_PER_CAVALL
+    } else {
+        llenya_necesaria = 0
+    }
+    
+    llenya_necesaria = Math.roundWithPrecision(llenya_necesaria, 2)
+    if (kg_llenya >= llenya_necesaria) {
+        kg_llenya += 0 - llenya_necesaria
+        kg_llenya = Math.roundWithPrecision(kg_llenya, 2)
+        if (producte2 == "Gallina") {
+            gallines += quantitat
+            mostrar_missatge("Has obtingut " + ("" + ("" + quantitat)) + " gallina(s)")
+            mostrar_missatge("Cost: " + ("" + ("" + llenya_necesaria)) + " kg llenya")
+        } else if (producte2 == "Patata") {
+            patates += quantitat * 1.5
+            patates = Math.roundWithPrecision(patates, 2)
+            mostrar_missatge("Has obtingut " + ("" + ("" + quantitat * 1.5)) + " kg patates")
+            mostrar_missatge("Cost: " + ("" + ("" + llenya_necesaria)) + " kg llenya")
+        } else if (producte2 == "Cabra") {
+            cabres += quantitat
+            mostrar_missatge("Has obtingut " + ("" + ("" + quantitat)) + " cabra(s)")
+            mostrar_missatge("Cost: " + ("" + ("" + llenya_necesaria)) + " kg llenya")
+        } else if (producte2 == "Ous") {
+            ous += quantitat * 12
+            mostrar_missatge("Has obtingut " + ("" + ("" + quantitat * 12)) + " ous")
+            mostrar_missatge("Cost: " + ("" + ("" + llenya_necesaria)) + " kg llenya")
+        } else if (producte2 == "Caball") {
+            caballs += quantitat
+            mostrar_missatge("Has obtingut " + ("" + ("" + quantitat)) + " caball(s)")
+            mostrar_missatge("Cost: " + ("" + ("" + llenya_necesaria)) + " kg llenya")
+        }
+        
+        mostrar_inventari()
+    } else {
+        mostrar_missatge("No tens prou llenya!")
+        mostrar_missatge("Necessites: " + ("" + ("" + llenya_necesaria)) + " kg")
+        mostrar_missatge("Tens: " + ("" + ("" + kg_llenya)) + " kg")
+    }
+    
+}
+
+let house_bottom = 0
+let house_top = 0
+let house_right = 0
+let house_left = 0
+let opcio2 = ""
 let myMenu : miniMenu.MenuSprite = null
-let BackPack : miniMenu.MenuItem[] = []
+let labels : string[] = []
+let quantitat2 = 0
+let menu_quantitat : miniMenu.MenuSprite = null
+let opcions_text : string[] = []
+let opcions_vals : number[] = []
+let producte_seleccionat = ""
 let nena : Sprite = null
 let MODE_GAME = 0
+let kg_llenya = 0
+let BackPack : number[] = []
+let LLENYA_PER_GALLINA = 0
+let LLENYA_PER_CABRA = 0
+let LLENYA_PER_CAVALL = 0
+let gallines = 0
+let patates = 0
+let cabres = 0
+let ous = 0
+let caballs = 0
+let quantitat_actual = 1
+function fer_intercanvi(opcio3: any) {
+    
+    if (opcio3 == "Gallina" && kg_llenya >= LLENYA_PER_GALLINA) {
+        kg_llenya += 0 - LLENYA_PER_GALLINA
+        gallines += 1
+    } else if (opcio3 == "Patata" && kg_llenya >= 2) {
+        kg_llenya += 0 - 2
+        patates += 1.5
+    } else if (opcio3 == "Cabra" && kg_llenya >= LLENYA_PER_CABRA) {
+        kg_llenya += 0 - LLENYA_PER_CABRA
+        cabres += 1
+    } else if (opcio3 == "Ous" && kg_llenya >= 3) {
+        kg_llenya += 0 - 3
+        ous += 12
+    } else if (opcio3 == "Caball" && kg_llenya >= LLENYA_PER_CAVALL) {
+        kg_llenya += 0 - LLENYA_PER_CAVALL
+        caballs += 1
+    }
+    
+    kg_llenya = Math.roundWithPrecision(kg_llenya, 2)
+    patates = Math.roundWithPrecision(patates, 2)
+}
+
+kg_llenya = 100
+LLENYA_PER_GALLINA = 6
+let LLENYA_PER_PATATA = 2 / 1.5
+LLENYA_PER_CABRA = 5
+let LLENYA_PER_OUS = 3 / 12
+LLENYA_PER_CAVALL = 12
 let casa = sprites.create(img`
         ....................8a8aa8a8....................
         .................aaa888aa8a8aaa.................
@@ -359,29 +460,25 @@ game.onUpdate(function on_on_update() {
             nena.y = house_top - 5
         } else if (min_dist == dist_bottom) {
             nena.y = house_bottom + 5
+            game.showLongText(`
+                    BENVINGUT/DA AL CONVERSOR RURAL!
+                    
+                    Tens 100 kg de llenya inicial.
+                    Pots intercanviar-la per productes!
+                    
+                    Prem A per obrir el menú de conversió.
+                    Prem B per tencar els menús.
+                    `, DialogLayout.Full)
+            game.showLongText(`
+                    TAULA DE CONVERSIO:
+                    6 kg llenya = 1 gallina
+                    2 kg llenya = 1.5 kg patates
+                    5 kg llenya = 1 cabra
+                    3 kg llenya = 12 ous
+                    12 kg llenya = 1 cavall
+                    `, DialogLayout.Full)
         }
         
     }
     
 })
-function fer_intercanvi(opcio: string) {
-    
-    if (opcio == "Gallina" && kg_llenya >= LLENYA_PER_GALLINA) {
-        kg_llenya -= LLENYA_PER_GALLINA
-        gallines += 1
-    } else if (opcio == "Patata" && kg_llenya >= 2) {
-        kg_llenya -= 2
-        patates += 1.5
-    } else if (opcio == "Cabra" && kg_llenya >= LLENYA_PER_CABRA) {
-        kg_llenya -= LLENYA_PER_CABRA
-        cabres += 1
-    } else if (opcio == "Ous" && kg_llenya >= 3) {
-        kg_llenya -= 3
-        ous += 12
-    } else if (opcio == "Caball" && kg_llenya >= LLENYA_PER_CAVALL) {
-        kg_llenya -= LLENYA_PER_CAVALL
-        caballs += 1
-    }
-    
-}
-
