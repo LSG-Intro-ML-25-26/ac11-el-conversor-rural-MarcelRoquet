@@ -1,16 +1,90 @@
+//  CONVERSOR RURAL
+//  Marcel Roquet
+//  DAM2
+//  limits de la casa 
+let house_bottom = 0
+let house_top = 0
+let house_right = 0
+let house_left = 0
+//  llista d'arbres per limitar mapa i tallar llenya 
+let arbres : Sprite[] = []
+//  Variables del sistema de menús
+let opcio2 = ""
+let myMenu : miniMenu.MenuSprite = null
+let labels : string[] = []
+let quantitat2 = 0
+let menu_quantitat : miniMenu.MenuSprite = null
+let opcions_text : string[] = []
+let opcions_vals : number[] = []
+let producte_seleccionat = ""
+//  control del joc
+let VELOCITAT_ATURADA = 0
+let menu_obert = false
+let VELOCITAT_NORMAL = 0
+//  Sprites arbres 
+let a12 : Sprite = null
+let a13 : Sprite = null
+let a9 : Sprite = null
+let a8 : Sprite = null
+let a7 : Sprite = null
+let a6 : Sprite = null
+let a5 : Sprite = null
+let a4 : Sprite = null
+let a11 : Sprite = null
+let a10 : Sprite = null
+let a3 : Sprite = null
+let arbre2 : Sprite = null
+//  constants del joc 
+let MODE_GAME = 0
+let LLENYA_PER_PAQUET_OUS = 3
+let LLENYA_PER_GALLINA = 6
+let LLENYA_PER_CABRA = 5
+let LLENYA_PER_CAVALL = 12
+let LLENYA_PER_PATATA = 2 / 1.5
 let LLENYA_TALLADA = 5
 let DISTANCIA_ARBRE = 18
+let kg_llenya = 0
+// recursos del jugador
+kg_llenya = 0
+let gallines = 0
+let patates = 0
+let cabres = 0
+let ous = 0
+let caballs = 0
+// personantge i objectes
+let nena : Sprite = null
+let BackPack : number[] = []
+// CANVIAR animació de la nena quan es mou amunt 
 controller.up.onEvent(ControllerButtonEvent.Pressed, function on_up_pressed() {
     animation.runImageAnimation(nena, assets.animation`
             nena-animation-up
             `, 500, false)
 })
+//  funcio per tallar llenya quan estigui a prop dels arbres
+controller.B.onEvent(ControllerButtonEvent.Pressed, function on_b_pressed() {
+    
+    //  que no es pugui fer amb el menú obert
+    if (menu_obert) {
+        return
+    }
+    
+    if (!esta_a_prop_d_un_arbre()) {
+        return
+    }
+    
+    kg_llenya += LLENYA_TALLADA
+    kg_llenya = Math.roundWithPrecision(kg_llenya, 2)
+    mostrar_missatge("Has tallat " + ("" + ("" + LLENYA_TALLADA)) + " kg de llenya")
+    mostrar_missatge("Total llenya: " + ("" + ("" + kg_llenya)) + " kg")
+})
+// funcio per utilitzar el submenú 
 function obrir_menu_quantitat(producte: string) {
     
     let items : miniMenu.MenuItem[] = []
     menu_obert = true
     controller.moveSprite(nena, VELOCITAT_ATURADA, VELOCITAT_ATURADA)
     producte_seleccionat = producte
+    // dos arrays un de view i l'altre de llógica 
     opcions_vals = [1, 2, 3, 5, 10]
     opcions_text = ["1", "2", "3", "5", "10", "Tornar"]
     for (let opcio of opcions_text) {
@@ -19,6 +93,7 @@ function obrir_menu_quantitat(producte: string) {
     menu_quantitat = miniMenu.createMenuFromArray(items)
     menu_quantitat.setTitle("Quantitat de " + producte)
     menu_quantitat.setPosition(70, 50)
+    //  funció que s'ulititza quan el usuari a seleccionat una opció del submenú, s'apliquen els canvis i el moures esta actiu 
     menu_quantitat.onButtonPressed(controller.A, function on_button_pressed(selection: any, selected_index: number) {
         
         menu_quantitat.close()
@@ -31,6 +106,7 @@ function obrir_menu_quantitat(producte: string) {
         quantitat2 = opcions_vals[selected_index]
         fer_intercanvi_amb_quantitat(producte, quantitat2)
     })
+    // aquesta funció tanca directrament el submenú quen es prem B
     menu_quantitat.onButtonPressed(controller.B, function on_button_pressed2(selection2: any, selected_index2: any) {
         
         menu_quantitat.close()
@@ -39,40 +115,51 @@ function obrir_menu_quantitat(producte: string) {
     })
 }
 
+//  activa el menú 
 controller.A.onEvent(ControllerButtonEvent.Pressed, function on_a_pressed() {
     
+    // crea una llista amb els items del miniMenun
     let items2 : miniMenu.MenuItem[] = []
+    // si ja esta obert no volem accdecir així que return 
     if (menu_obert) {
         return
     }
     
+    // sino indiquem amb un true que si 
     menu_obert = true
     controller.moveSprite(nena, VELOCITAT_ATURADA, VELOCITAT_ATURADA)
     labels = ["Gallina", "Racions Patata", "Cabra", "Dotzena d'Ous", "Caball", "Veure Inventari", "Tancar Menú"]
+    // aqui gestiona la selecció del que vol el usuari
     for (let l of labels) {
         items2.push(miniMenu.createMenuItem(l))
     }
     myMenu = miniMenu.createMenuFromArray(items2)
     myMenu.setTitle("CONVERSOR RURAL")
     myMenu.setPosition(69, 48)
+    //  s'obre el submenú per seleccionar la quantitat
     myMenu.onButtonPressed(controller.A, function on_button_pressed3(selection3: any, selectedIndex: number) {
         
         opcio2 = labels[selectedIndex]
+        //  per veure la opcio seleccionada 
         if (opcio2 == "Tancar Menú") {
             myMenu.close()
+            //  per indicar que no hiha més menús oberts
             menu_obert = false
             controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
         } else if (opcio2 == "Veure Inventari") {
             myMenu.close()
             menu_obert = false
             controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
+            // mostra el inventari
             mostrar_inventari()
         } else {
             myMenu.close()
+            // es tanca el menu actual 
             obrir_menu_quantitat(opcio2)
         }
         
     })
+    // tanca el menú si es clica B 
     myMenu.onButtonPressed(controller.B, function on_button_pressed4(selection22: any, selectedIndex2: any) {
         
         myMenu.close()
@@ -80,25 +167,30 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function on_a_pressed() {
         controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
     })
 })
+// canvi d'animació cap a la dreta
 controller.left.onEvent(ControllerButtonEvent.Pressed, function on_left_pressed() {
     animation.runImageAnimation(nena, assets.animation`
             nena-animation-right
             `, 500, false)
 })
+// funció per mostrar tots els textos, reb el missatge i el mostra bonic
 function mostrar_missatge(text: string) {
     game.showLongText(text, DialogLayout.Bottom)
 }
 
+// canvi d'animació al anar cap a la dreta
 controller.right.onEvent(ControllerButtonEvent.Pressed, function on_right_pressed() {
     animation.runImageAnimation(nena, assets.animation`
             nena-animation-left
             `, 500, false)
 })
+// canvi d'animació al baixar 
 controller.down.onEvent(ControllerButtonEvent.Pressed, function on_down_pressed() {
     animation.runImageAnimation(nena, assets.animation`
             nena-animation-down
             `, 500, false)
 })
+// només per veure els teus productes 
 function mostrar_inventari() {
     let info_text = "TEU INVENTARI\n"
     info_text = "" + info_text + "══════════════════\n"
@@ -112,6 +204,20 @@ function mostrar_inventari() {
     game.showLongText(info_text, DialogLayout.Full)
 }
 
+// detectar si pots tallar arbres 
+function esta_a_prop_d_un_arbre(): boolean {
+    
+    arbres = [arbre2, a3, a10, a11, a4, a5, a6, a7, a8, a9, a12, a13]
+    for (let arbre of arbres) {
+        if (nena.overlapsWith(arbre)) {
+            return true
+        }
+        
+    }
+    return false
+}
+
+// llogica per intercanvi, converteix llenya a productes 
 function fer_intercanvi_amb_quantitat(producte2: string, quantitat: number) {
     let llenya_necesaria: number;
     
@@ -130,9 +236,11 @@ function fer_intercanvi_amb_quantitat(producte2: string, quantitat: number) {
     }
     
     llenya_necesaria = Math.roundWithPrecision(llenya_necesaria, 2)
+    // comproba que tinguis la llenya necessaria 
     if (kg_llenya >= llenya_necesaria) {
         kg_llenya += 0 - llenya_necesaria
         kg_llenya = Math.roundWithPrecision(kg_llenya, 2)
+        // si l'has tingut mostra el resultat 
         if (producte2 == "Gallina") {
             gallines += quantitat
             mostrar_missatge("Has obtingut " + ("" + ("" + quantitat)) + " gallina(s)")
@@ -165,34 +273,6 @@ function fer_intercanvi_amb_quantitat(producte2: string, quantitat: number) {
     
 }
 
-let house_bottom = 0
-let house_top = 0
-let house_right = 0
-let house_left = 0
-let opcio2 = ""
-let myMenu : miniMenu.MenuSprite = null
-let labels : string[] = []
-let quantitat2 = 0
-let menu_quantitat : miniMenu.MenuSprite = null
-let opcions_text : string[] = []
-let opcions_vals : number[] = []
-let producte_seleccionat = ""
-let VELOCITAT_ATURADA = 0
-let menu_obert = false
-let MODE_GAME = 0
-let LLENYA_PER_PAQUET_OUS = 0
-let nena : Sprite = null
-let VELOCITAT_NORMAL = 0
-let caballs = 0
-let ous = 0
-let cabres = 0
-let patates = 0
-let gallines = 0
-let LLENYA_PER_CAVALL = 0
-let LLENYA_PER_CABRA = 0
-let LLENYA_PER_GALLINA = 0
-let BackPack : number[] = []
-let kg_llenya = 0
 //  Variables per el submenu
 VELOCITAT_NORMAL = 100
 controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
@@ -220,12 +300,7 @@ function fer_intercanvi(opcio3: any) {
     patates = Math.roundWithPrecision(patates, 2)
 }
 
-kg_llenya = 100
-LLENYA_PER_GALLINA = 6
-let LLENYA_PER_PATATA = 2 / 1.5
-LLENYA_PER_CABRA = 5
-LLENYA_PER_PAQUET_OUS = 3
-LLENYA_PER_CAVALL = 12
+// creació sprites
 let casa = sprites.create(img`
         ....................8a8aa8a8....................
         .................aaa888aa8a8aaa.................
@@ -402,51 +477,51 @@ scene.setBackgroundImage(img`
 let MODE_MENU2 = 1
 let MODE_INVENTORY = 2
 let mode_joc2 = MODE_GAME
-let arbre2 = sprites.create(assets.image`
+arbre2 = sprites.create(assets.image`
     forestTree1
     `, SpriteKind.Player)
 arbre2.setPosition(4, 31)
-let a3 = sprites.create(assets.image`
+a3 = sprites.create(assets.image`
     forestTree1
     `, SpriteKind.Player)
 a3.setPosition(15, 31)
-let a10 = sprites.create(assets.image`
+a10 = sprites.create(assets.image`
     forestTree1
     `, SpriteKind.Player)
 a10.setPosition(30, 31)
-let a11 = sprites.create(assets.image`
+a11 = sprites.create(assets.image`
     forestTree1
     `, SpriteKind.Player)
 a11.setPosition(45, 31)
-let a4 = sprites.create(assets.image`
+a4 = sprites.create(assets.image`
     forestTree1
     `, SpriteKind.Player)
 a4.setPosition(60, 31)
-let a5 = sprites.create(assets.image`
+a5 = sprites.create(assets.image`
     forestTree1
     `, SpriteKind.Player)
 a5.setPosition(70, 31)
-let a6 = sprites.create(assets.image`
+a6 = sprites.create(assets.image`
     forestTree1
     `, SpriteKind.Player)
 a6.setPosition(85, 31)
-let a7 = sprites.create(assets.image`
+a7 = sprites.create(assets.image`
     forestTree1
     `, SpriteKind.Player)
 a7.setPosition(100, 31)
-let a8 = sprites.create(assets.image`
+a8 = sprites.create(assets.image`
     forestTree1
     `, SpriteKind.Player)
 a8.setPosition(115, 31)
-let a9 = sprites.create(assets.image`
+a9 = sprites.create(assets.image`
     forestTree1
     `, SpriteKind.Player)
 a9.setPosition(130, 31)
-let a13 = sprites.create(assets.image`
+a13 = sprites.create(assets.image`
     forestTree1
     `, SpriteKind.Player)
 a13.setPosition(145, 31)
-let a12 = sprites.create(assets.image`
+a12 = sprites.create(assets.image`
     forestTree1
     `, SpriteKind.Player)
 a12.setPosition(155, 31)
@@ -456,34 +531,7 @@ nena = sprites.create(assets.image`
 nena.setPosition(21, 105)
 nena.setStayInScreen(true)
 controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
-function esta_a_prop_d_un_arbre(): boolean {
-    let arbres = [arbre2, a3, a10, a11, a4, a5, a6, a7, a8, a9, a12, a13]
-    for (let arbre of arbres) {
-        if (nena.overlapsWith(arbre)) {
-            return true
-        }
-        
-    }
-    return false
-}
-
-// funcio per tallar llenya quan estigui a prop dels arbres
-controller.B.onEvent(ControllerButtonEvent.Pressed, function on_b_pressed() {
-    
-    //  que no es pugui fer amb el menú obert 
-    if (menu_obert) {
-        return
-    }
-    
-    if (!esta_a_prop_d_un_arbre()) {
-        return
-    }
-    
-    kg_llenya += LLENYA_TALLADA
-    kg_llenya = Math.roundWithPrecision(kg_llenya, 2)
-    mostrar_missatge("Has tallat " + ("" + LLENYA_TALLADA) + " kg de llenya")
-    mostrar_missatge("Total llenya: " + ("" + kg_llenya) + " kg")
-})
+//  per a que s'executi a cada frame 
 game.onUpdate(function on_on_update() {
     let dist_left: number;
     let dist_right: number;
@@ -493,10 +541,12 @@ game.onUpdate(function on_on_update() {
     let min_vertical: number;
     let min_dist: number;
     
+    // evitar que la nena no vagi més enllá dels arbres 
     if (nena.y < 40) {
         nena.y = 40
     }
     
+    //  per no poder passra per sobre de la casa 
     house_left = casa.x - 23
     house_right = casa.x + 23
     house_top = casa.y - 20
@@ -509,6 +559,7 @@ game.onUpdate(function on_on_update() {
         min_horizontal = Math.min(dist_left, dist_right)
         min_vertical = Math.min(dist_top, dist_bottom)
         min_dist = Math.min(min_horizontal, min_vertical)
+        // llançar el personatge cap a fora si intentea passra per sobres 
         if (min_dist == dist_left) {
             nena.x = house_left - 5
         } else if (min_dist == dist_right) {
@@ -517,15 +568,13 @@ game.onUpdate(function on_on_update() {
             nena.y = house_top - 5
         } else if (min_dist == dist_bottom) {
             nena.y = house_bottom + 5
+            // si está a sota, mostrar el missatge inicial del joc 
             game.showLongText(`
                     BON NADAL.
                     BENVINGUT/DA AL CONVERSOR RURAL!
                     
-                    Tens 100 kg de llenya inicial.
-                    Pots intercanviar-la per productes!
-                    
                     Prem A per obrir el menú de conversió.
-                    Prem B o selecciona la opció de tornar per tencar els menús.
+                    Prem B per tallar llenya
                     `, DialogLayout.Full)
             game.showLongText(`
                     TAULA DE CONVERSIO:
