@@ -1,7 +1,5 @@
-let nena : Sprite = null
-/** Variables per el submenu */
-let VELOCITAT_NORMAL = 100
-let VELOCITAT_ATURADA = 0
+let LLENYA_TALLADA = 5
+let DISTANCIA_ARBRE = 18
 controller.up.onEvent(ControllerButtonEvent.Pressed, function on_up_pressed() {
     animation.runImageAnimation(nena, assets.animation`
             nena-animation-up
@@ -9,9 +7,9 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function on_up_pressed() {
 })
 function obrir_menu_quantitat(producte: string) {
     
+    let items : miniMenu.MenuItem[] = []
     menu_obert = true
     controller.moveSprite(nena, VELOCITAT_ATURADA, VELOCITAT_ATURADA)
-    let items : miniMenu.MenuItem[] = []
     producte_seleccionat = producte
     opcions_vals = [1, 2, 3, 5, 10]
     opcions_text = ["1", "2", "3", "5", "10", "Tornar"]
@@ -41,17 +39,15 @@ function obrir_menu_quantitat(producte: string) {
     })
 }
 
-let menu_obert = false
-controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
 controller.A.onEvent(ControllerButtonEvent.Pressed, function on_a_pressed() {
     
+    let items2 : miniMenu.MenuItem[] = []
     if (menu_obert) {
         return
     }
     
     menu_obert = true
     controller.moveSprite(nena, VELOCITAT_ATURADA, VELOCITAT_ATURADA)
-    let items2 : miniMenu.MenuItem[] = []
     labels = ["Gallina", "Racions Patata", "Cabra", "Dotzena d'Ous", "Caball", "Veure Inventari", "Tancar Menú"]
     for (let l of labels) {
         items2.push(miniMenu.createMenuItem(l))
@@ -181,17 +177,25 @@ let menu_quantitat : miniMenu.MenuSprite = null
 let opcions_text : string[] = []
 let opcions_vals : number[] = []
 let producte_seleccionat = ""
+let VELOCITAT_ATURADA = 0
+let menu_obert = false
 let MODE_GAME = 0
-let kg_llenya = 0
-let BackPack : number[] = []
-let LLENYA_PER_GALLINA = 0
-let LLENYA_PER_CABRA = 0
-let LLENYA_PER_CAVALL = 0
-let gallines = 0
-let patates = 0
-let cabres = 0
-let ous = 0
+let LLENYA_PER_PAQUET_OUS = 0
+let nena : Sprite = null
+let VELOCITAT_NORMAL = 0
 let caballs = 0
+let ous = 0
+let cabres = 0
+let patates = 0
+let gallines = 0
+let LLENYA_PER_CAVALL = 0
+let LLENYA_PER_CABRA = 0
+let LLENYA_PER_GALLINA = 0
+let BackPack : number[] = []
+let kg_llenya = 0
+//  Variables per el submenu
+VELOCITAT_NORMAL = 100
+controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
 let quantitat_actual = 1
 function fer_intercanvi(opcio3: any) {
     
@@ -220,7 +224,7 @@ kg_llenya = 100
 LLENYA_PER_GALLINA = 6
 let LLENYA_PER_PATATA = 2 / 1.5
 LLENYA_PER_CABRA = 5
-let LLENYA_PER_PAQUET_OUS = 3
+LLENYA_PER_PAQUET_OUS = 3
 LLENYA_PER_CAVALL = 12
 let casa = sprites.create(img`
         ....................8a8aa8a8....................
@@ -449,8 +453,37 @@ a12.setPosition(155, 31)
 nena = sprites.create(assets.image`
     nena-front
     `, SpriteKind.Player)
+nena.setPosition(21, 105)
 nena.setStayInScreen(true)
 controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
+function esta_a_prop_d_un_arbre(): boolean {
+    let arbres = [arbre2, a3, a10, a11, a4, a5, a6, a7, a8, a9, a12, a13]
+    for (let arbre of arbres) {
+        if (nena.overlapsWith(arbre)) {
+            return true
+        }
+        
+    }
+    return false
+}
+
+// funcio per tallar llenya quan estigui a prop dels arbres
+controller.B.onEvent(ControllerButtonEvent.Pressed, function on_b_pressed() {
+    
+    //  que no es pugui fer amb el menú obert 
+    if (menu_obert) {
+        return
+    }
+    
+    if (!esta_a_prop_d_un_arbre()) {
+        return
+    }
+    
+    kg_llenya += LLENYA_TALLADA
+    kg_llenya = Math.roundWithPrecision(kg_llenya, 2)
+    mostrar_missatge("Has tallat " + ("" + LLENYA_TALLADA) + " kg de llenya")
+    mostrar_missatge("Total llenya: " + ("" + kg_llenya) + " kg")
+})
 game.onUpdate(function on_on_update() {
     let dist_left: number;
     let dist_right: number;
@@ -485,7 +518,7 @@ game.onUpdate(function on_on_update() {
         } else if (min_dist == dist_bottom) {
             nena.y = house_bottom + 5
             game.showLongText(`
-                              BON NADAL.
+                    BON NADAL.
                     BENVINGUT/DA AL CONVERSOR RURAL!
                     
                     Tens 100 kg de llenya inicial.
@@ -503,11 +536,11 @@ game.onUpdate(function on_on_update() {
                     12 kg llenya = 1 cavall
                     `, DialogLayout.Full)
             game.showLongText(`
-                                         AVÍS:
-                                    Una ració de patates equival a 1,5 Kg de patates 
-                                    Una dotzena d'ous equivalen a 12 ous.
-                                    Aquestes son les racions mínimes que es poden adquirir  
-                                    `, DialogLayout.Full)
+                    AVÍS:
+                    Una ració de patates equival a 1,5 Kg de patates
+                    Una dotzena d'ous equivalen a 12 ous.
+                    Aquestes son les racions mínimes que es poden adquirir
+                    `, DialogLayout.Full)
         }
         
     }

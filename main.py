@@ -1,11 +1,5 @@
-nena: Sprite = None
-"""
-
-Variables per el submenu
-
-"""
-VELOCITAT_NORMAL = 100
-VELOCITAT_ATURADA = 0
+LLENYA_TALLADA = 5
+DISTANCIA_ARBRE = 18
 
 def on_up_pressed():
     animation.run_image_animation(nena,
@@ -17,12 +11,11 @@ def on_up_pressed():
 controller.up.on_event(ControllerButtonEvent.PRESSED, on_up_pressed)
 
 def obrir_menu_quantitat(producte: str):
-    global producte_seleccionat, opcions_vals, opcions_text, menu_quantitat, menu_obert
+    global menu_obert, producte_seleccionat, opcions_vals, opcions_text, menu_quantitat
+    items: List[miniMenu.MenuItem] = []
     menu_obert = True
     controller.move_sprite(nena, VELOCITAT_ATURADA, VELOCITAT_ATURADA)
-    items: List[miniMenu.MenuItem] = []
     producte_seleccionat = producte
-
     opcions_vals = [1, 2, 3, 5, 10]
     opcions_text = ["1", "2", "3", "5", "10", "Tornar"]
     for opcio in opcions_text:
@@ -32,7 +25,7 @@ def obrir_menu_quantitat(producte: str):
     menu_quantitat.set_position(70, 50)
     
     def on_button_pressed(selection, selected_index):
-        global quantitat2, menu_obert
+        global menu_obert, quantitat2
         menu_quantitat.close()
         menu_obert = False
         controller.move_sprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
@@ -51,20 +44,13 @@ def obrir_menu_quantitat(producte: str):
     menu_quantitat.on_button_pressed(controller.B, on_button_pressed2)
     
 
-menu_obert = False
-controller.move_sprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
 def on_a_pressed():
-    global labels, myMenu, menu_obert
-
+    global menu_obert, labels, myMenu
+    items2: List[miniMenu.MenuItem] = []
     if menu_obert:
         return
-
     menu_obert = True
     controller.move_sprite(nena, VELOCITAT_ATURADA, VELOCITAT_ATURADA)
-
-    
-    items2: List[miniMenu.MenuItem] = []
-
     labels = ["Gallina",
         "Racions Patata",
         "Cabra",
@@ -81,18 +67,15 @@ def on_a_pressed():
     def on_button_pressed3(selection3, selectedIndex):
         global opcio2, menu_obert
         opcio2 = labels[selectedIndex]
-
         if opcio2 == "Tancar Menú":
             myMenu.close()
             menu_obert = False
             controller.move_sprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
-
         elif opcio2 == "Veure Inventari":
             myMenu.close()
             menu_obert = False
             controller.move_sprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
             mostrar_inventari()
-
         else:
             myMenu.close()
             obrir_menu_quantitat(opcio2)
@@ -118,7 +101,6 @@ def on_left_pressed():
 controller.left.on_event(ControllerButtonEvent.PRESSED, on_left_pressed)
 
 def mostrar_missatge(text: str):
-
     game.show_long_text(text, DialogLayout.BOTTOM)
 
 def on_right_pressed():
@@ -152,27 +134,22 @@ def mostrar_inventari():
     game.show_long_text(info_text, DialogLayout.FULL)
 def fer_intercanvi_amb_quantitat(producte2: str, quantitat: number):
     global kg_llenya, gallines, patates, cabres, ous, caballs
- 
     if producte2 == "Gallina":
         llenya_necesaria = quantitat * LLENYA_PER_GALLINA
     elif producte2 == "Racions Patata":
         llenya_necesaria = quantitat * 2
     elif producte2 == "Cabra":
-      
         llenya_necesaria = quantitat * LLENYA_PER_CABRA
     elif producte2 == "Dotzena d'Ous":
         llenya_necesaria = quantitat * LLENYA_PER_PAQUET_OUS
     elif producte2 == "Caball":
- 
         llenya_necesaria = quantitat * LLENYA_PER_CAVALL
     else:
         llenya_necesaria = 0
     llenya_necesaria = Math.round_with_precision(llenya_necesaria, 2)
-
     if kg_llenya >= llenya_necesaria:
         kg_llenya += 0 - llenya_necesaria
         kg_llenya = Math.round_with_precision(kg_llenya, 2)
- 
         if producte2 == "Gallina":
             gallines += quantitat
             mostrar_missatge("Has obtingut " + ("" + str(quantitat)) + " gallina(s)")
@@ -194,7 +171,6 @@ def fer_intercanvi_amb_quantitat(producte2: str, quantitat: number):
             caballs += quantitat
             mostrar_missatge("Has obtingut " + ("" + str(quantitat)) + " caball(s)")
             mostrar_missatge("Cost: " + ("" + str(llenya_necesaria)) + " kg llenya")
-  
         mostrar_inventari()
     else:
         mostrar_missatge("No tens prou llenya!")
@@ -212,18 +188,25 @@ menu_quantitat: miniMenu.MenuSprite = None
 opcions_text: List[str] = []
 opcions_vals: List[number] = []
 producte_seleccionat = ""
-
+VELOCITAT_ATURADA = 0
+menu_obert = False
 MODE_GAME = 0
-kg_llenya = 0
-BackPack: List[number] = []
-LLENYA_PER_GALLINA = 0
-LLENYA_PER_CABRA = 0
-LLENYA_PER_CAVALL = 0
-gallines = 0
-patates = 0
-cabres = 0
-ous = 0
+LLENYA_PER_PAQUET_OUS = 0
+nena: Sprite = None
+VELOCITAT_NORMAL = 0
 caballs = 0
+ous = 0
+cabres = 0
+patates = 0
+gallines = 0
+LLENYA_PER_CAVALL = 0
+LLENYA_PER_CABRA = 0
+LLENYA_PER_GALLINA = 0
+BackPack: List[number] = []
+kg_llenya = 0
+# Variables per el submenu
+VELOCITAT_NORMAL = 100
+controller.move_sprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
 quantitat_actual = 1
 def fer_intercanvi(opcio3: any):
     global kg_llenya, gallines, patates, cabres, ous, caballs
@@ -242,7 +225,6 @@ def fer_intercanvi(opcio3: any):
     elif opcio3 == "Caball" and kg_llenya >= LLENYA_PER_CAVALL:
         kg_llenya += 0 - LLENYA_PER_CAVALL
         caballs += 1
-
     kg_llenya = Math.round_with_precision(kg_llenya, 2)
     patates = Math.round_with_precision(patates, 2)
 kg_llenya = 100
@@ -479,8 +461,35 @@ a12.set_position(155, 31)
 nena = sprites.create(assets.image("""
     nena-front
     """), SpriteKind.player)
+nena.set_position(21, 105)
 nena.set_stay_in_screen(True)
 controller.move_sprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
+
+def esta_a_prop_d_un_arbre() -> bool:
+    arbres = [arbre2, a3, a10, a11, a4, a5, a6, a7, a8, a9, a12, a13]
+    for arbre in arbres:
+        if nena.overlaps_with(arbre):
+            return True
+    return False
+#funcio per tallar llenya quan estigui a prop dels arbres
+def on_b_pressed():
+    global kg_llenya
+    # que no es pugui fer amb el menú obert 
+    if menu_obert:
+        return
+ 
+    if not esta_a_prop_d_un_arbre():
+            return
+
+    
+    kg_llenya += LLENYA_TALLADA
+    kg_llenya = Math.round_with_precision(kg_llenya, 2)
+
+    mostrar_missatge("Has tallat " + str(LLENYA_TALLADA) + " kg de llenya")
+    mostrar_missatge("Total llenya: " + str(kg_llenya) + " kg")
+controller.B.on_event(ControllerButtonEvent.PRESSED, on_b_pressed)
+
+
 
 
 def on_on_update():
@@ -507,9 +516,8 @@ def on_on_update():
             nena.y = house_top - 5
         elif min_dist == dist_bottom:
             nena.y = house_bottom + 5
-
             game.show_long_text("""
-                              BON NADAL.
+                    BON NADAL.
                     BENVINGUT/DA AL CONVERSOR RURAL!
                     
                     Tens 100 kg de llenya inicial.
@@ -519,7 +527,6 @@ def on_on_update():
                     Prem B o selecciona la opció de tornar per tencar els menús.
                     """,
                 DialogLayout.FULL)
-       
             game.show_long_text("""
                     TAULA DE CONVERSIO:
                     6 kg llenya = 1 gallina
@@ -530,10 +537,10 @@ def on_on_update():
                     """,
                 DialogLayout.FULL)
             game.show_long_text("""
-                                         AVÍS:
-                                    Una ració de patates equival a 1,5 Kg de patates 
-                                    Una dotzena d'ous equivalen a 12 ous.
-                                    Aquestes son les racions mínimes que es poden adquirir  
-                                    """,
-                                DialogLayout.FULL)
+                    AVÍS:
+                    Una ració de patates equival a 1,5 Kg de patates
+                    Una dotzena d'ous equivalen a 12 ous.
+                    Aquestes son les racions mínimes que es poden adquirir
+                    """,
+                DialogLayout.FULL)
 game.on_update(on_on_update)
