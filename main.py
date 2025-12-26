@@ -66,9 +66,9 @@ def on_a_pressed():
     items2: List[miniMenu.MenuItem] = []
 
     labels = ["Gallina",
-        "Patata",
+        "Racions Patata",
         "Cabra",
-        "Ous",
+        "Dotzena d'Ous",
         "Caball",
         "Veure Inventari",
         "Tancar Menú"]
@@ -155,13 +155,13 @@ def fer_intercanvi_amb_quantitat(producte2: str, quantitat: number):
  
     if producte2 == "Gallina":
         llenya_necesaria = quantitat * LLENYA_PER_GALLINA
-    elif producte2 == "Patata":
+    elif producte2 == "Racions Patata":
         llenya_necesaria = quantitat * 2
     elif producte2 == "Cabra":
       
         llenya_necesaria = quantitat * LLENYA_PER_CABRA
-    elif producte2 == "Ous":
-        llenya_necesaria = quantitat * 3 / 12
+    elif producte2 == "Dotzena d'Ous":
+        llenya_necesaria = quantitat * LLENYA_PER_PAQUET_OUS
     elif producte2 == "Caball":
  
         llenya_necesaria = quantitat * LLENYA_PER_CAVALL
@@ -177,7 +177,7 @@ def fer_intercanvi_amb_quantitat(producte2: str, quantitat: number):
             gallines += quantitat
             mostrar_missatge("Has obtingut " + ("" + str(quantitat)) + " gallina(s)")
             mostrar_missatge("Cost: " + ("" + str(llenya_necesaria)) + " kg llenya")
-        elif producte2 == "Patata":
+        elif producte2 == "Racions Patata":
             patates += quantitat * 1.5
             patates = Math.round_with_precision(patates, 2)
             mostrar_missatge("Has obtingut " + ("" + str(quantitat * 1.5)) + " kg patates")
@@ -186,7 +186,7 @@ def fer_intercanvi_amb_quantitat(producte2: str, quantitat: number):
             cabres += quantitat
             mostrar_missatge("Has obtingut " + ("" + str(quantitat)) + " cabra(s)")
             mostrar_missatge("Cost: " + ("" + str(llenya_necesaria)) + " kg llenya")
-        elif producte2 == "Ous":
+        elif producte2 == "Dotzena d'Ous":
             ous += quantitat * 12
             mostrar_missatge("Has obtingut " + ("" + str(quantitat * 12)) + " ous")
             mostrar_missatge("Cost: " + ("" + str(llenya_necesaria)) + " kg llenya")
@@ -230,13 +230,13 @@ def fer_intercanvi(opcio3: any):
     if opcio3 == "Gallina" and kg_llenya >= LLENYA_PER_GALLINA:
         kg_llenya += 0 - LLENYA_PER_GALLINA
         gallines += 1
-    elif opcio3 == "Patata" and kg_llenya >= 2:
+    elif opcio3 == "Racions Patata" and kg_llenya >= 2:
         kg_llenya += 0 - 2
         patates += 1.5
     elif opcio3 == "Cabra" and kg_llenya >= LLENYA_PER_CABRA:
         kg_llenya += 0 - LLENYA_PER_CABRA
         cabres += 1
-    elif opcio3 == "Ous" and kg_llenya >= 3:
+    elif opcio3 == "Dotzena d'Ous" and kg_llenya >= 3:
         kg_llenya += 0 - 3
         ous += 12
     elif opcio3 == "Caball" and kg_llenya >= LLENYA_PER_CAVALL:
@@ -249,7 +249,7 @@ kg_llenya = 100
 LLENYA_PER_GALLINA = 6
 LLENYA_PER_PATATA = 2 / 1.5
 LLENYA_PER_CABRA = 5
-LLENYA_PER_OUS = 3 / 12
+LLENYA_PER_PAQUET_OUS = 3
 LLENYA_PER_CAVALL = 12
 casa = sprites.create(img("""
         ....................8a8aa8a8....................
@@ -508,7 +508,7 @@ def on_on_update():
         elif min_dist == dist_bottom:
             nena.y = house_bottom + 5
 
-            game.show_long_text(""" 
+            game.show_long_text("""
                               BON NADAL.
                     BENVINGUT/DA AL CONVERSOR RURAL!
                     
@@ -529,4 +529,11 @@ def on_on_update():
                     12 kg llenya = 1 cavall
                     """,
                 DialogLayout.FULL)
+            game.show_long_text("""
+                                         AVÍS:
+                                    Una ració de patates equival a 1,5 Kg de patates 
+                                    Una dotzena d'ous equivalen a 12 ous.
+                                    Aquestes son les racions mínimes que es poden adquirir  
+                                    """,
+                                DialogLayout.FULL)
 game.on_update(on_on_update)

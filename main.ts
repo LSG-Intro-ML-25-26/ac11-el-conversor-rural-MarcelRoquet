@@ -52,7 +52,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function on_a_pressed() {
     menu_obert = true
     controller.moveSprite(nena, VELOCITAT_ATURADA, VELOCITAT_ATURADA)
     let items2 : miniMenu.MenuItem[] = []
-    labels = ["Gallina", "Patata", "Cabra", "Ous", "Caball", "Veure Inventari", "Tancar Menú"]
+    labels = ["Gallina", "Racions Patata", "Cabra", "Dotzena d'Ous", "Caball", "Veure Inventari", "Tancar Menú"]
     for (let l of labels) {
         items2.push(miniMenu.createMenuItem(l))
     }
@@ -121,12 +121,12 @@ function fer_intercanvi_amb_quantitat(producte2: string, quantitat: number) {
     
     if (producte2 == "Gallina") {
         llenya_necesaria = quantitat * LLENYA_PER_GALLINA
-    } else if (producte2 == "Patata") {
+    } else if (producte2 == "Racions Patata") {
         llenya_necesaria = quantitat * 2
     } else if (producte2 == "Cabra") {
         llenya_necesaria = quantitat * LLENYA_PER_CABRA
-    } else if (producte2 == "Ous") {
-        llenya_necesaria = quantitat * 3 / 12
+    } else if (producte2 == "Dotzena d'Ous") {
+        llenya_necesaria = quantitat * LLENYA_PER_PAQUET_OUS
     } else if (producte2 == "Caball") {
         llenya_necesaria = quantitat * LLENYA_PER_CAVALL
     } else {
@@ -141,7 +141,7 @@ function fer_intercanvi_amb_quantitat(producte2: string, quantitat: number) {
             gallines += quantitat
             mostrar_missatge("Has obtingut " + ("" + ("" + quantitat)) + " gallina(s)")
             mostrar_missatge("Cost: " + ("" + ("" + llenya_necesaria)) + " kg llenya")
-        } else if (producte2 == "Patata") {
+        } else if (producte2 == "Racions Patata") {
             patates += quantitat * 1.5
             patates = Math.roundWithPrecision(patates, 2)
             mostrar_missatge("Has obtingut " + ("" + ("" + quantitat * 1.5)) + " kg patates")
@@ -150,7 +150,7 @@ function fer_intercanvi_amb_quantitat(producte2: string, quantitat: number) {
             cabres += quantitat
             mostrar_missatge("Has obtingut " + ("" + ("" + quantitat)) + " cabra(s)")
             mostrar_missatge("Cost: " + ("" + ("" + llenya_necesaria)) + " kg llenya")
-        } else if (producte2 == "Ous") {
+        } else if (producte2 == "Dotzena d'Ous") {
             ous += quantitat * 12
             mostrar_missatge("Has obtingut " + ("" + ("" + quantitat * 12)) + " ous")
             mostrar_missatge("Cost: " + ("" + ("" + llenya_necesaria)) + " kg llenya")
@@ -198,13 +198,13 @@ function fer_intercanvi(opcio3: any) {
     if (opcio3 == "Gallina" && kg_llenya >= LLENYA_PER_GALLINA) {
         kg_llenya += 0 - LLENYA_PER_GALLINA
         gallines += 1
-    } else if (opcio3 == "Patata" && kg_llenya >= 2) {
+    } else if (opcio3 == "Racions Patata" && kg_llenya >= 2) {
         kg_llenya += 0 - 2
         patates += 1.5
     } else if (opcio3 == "Cabra" && kg_llenya >= LLENYA_PER_CABRA) {
         kg_llenya += 0 - LLENYA_PER_CABRA
         cabres += 1
-    } else if (opcio3 == "Ous" && kg_llenya >= 3) {
+    } else if (opcio3 == "Dotzena d'Ous" && kg_llenya >= 3) {
         kg_llenya += 0 - 3
         ous += 12
     } else if (opcio3 == "Caball" && kg_llenya >= LLENYA_PER_CAVALL) {
@@ -220,7 +220,7 @@ kg_llenya = 100
 LLENYA_PER_GALLINA = 6
 let LLENYA_PER_PATATA = 2 / 1.5
 LLENYA_PER_CABRA = 5
-let LLENYA_PER_OUS = 3 / 12
+let LLENYA_PER_PAQUET_OUS = 3
 LLENYA_PER_CAVALL = 12
 let casa = sprites.create(img`
         ....................8a8aa8a8....................
@@ -484,7 +484,7 @@ game.onUpdate(function on_on_update() {
             nena.y = house_top - 5
         } else if (min_dist == dist_bottom) {
             nena.y = house_bottom + 5
-            game.showLongText(` 
+            game.showLongText(`
                               BON NADAL.
                     BENVINGUT/DA AL CONVERSOR RURAL!
                     
@@ -502,6 +502,12 @@ game.onUpdate(function on_on_update() {
                     3 kg llenya = 12 ous
                     12 kg llenya = 1 cavall
                     `, DialogLayout.Full)
+            game.showLongText(`
+                                         AVÍS:
+                                    Una ració de patates equival a 1,5 Kg de patates 
+                                    Una dotzena d'ous equivalen a 12 ous.
+                                    Aquestes son les racions mínimes que es poden adquirir  
+                                    `, DialogLayout.Full)
         }
         
     }
