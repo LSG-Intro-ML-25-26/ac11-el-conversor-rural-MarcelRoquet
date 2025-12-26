@@ -1,3 +1,7 @@
+let nena : Sprite = null
+/** Variables per el submenu */
+let VELOCITAT_NORMAL = 100
+let VELOCITAT_ATURADA = 0
 controller.up.onEvent(ControllerButtonEvent.Pressed, function on_up_pressed() {
     animation.runImageAnimation(nena, assets.animation`
             nena-animation-up
@@ -5,9 +9,9 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function on_up_pressed() {
 })
 function obrir_menu_quantitat(producte: string) {
     
+    menu_obert = true
     let items : miniMenu.MenuItem[] = []
     producte_seleccionat = producte
-    //  opcions de intercanvi
     opcions_vals = [1, 2, 3, 5, 10]
     opcions_text = ["1", "2", "3", "5", "10", "Tornar"]
     for (let opcio of opcions_text) {
@@ -19,6 +23,8 @@ function obrir_menu_quantitat(producte: string) {
     menu_quantitat.onButtonPressed(controller.A, function on_button_pressed(selection: any, selected_index: number) {
         
         menu_quantitat.close()
+        menu_obert = false
+        controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
         if (selected_index == 5) {
             return
         }
@@ -27,12 +33,24 @@ function obrir_menu_quantitat(producte: string) {
         fer_intercanvi_amb_quantitat(producte, quantitat2)
     })
     menu_quantitat.onButtonPressed(controller.B, function on_button_pressed2(selection2: any, selected_index2: any) {
+        
         menu_quantitat.close()
+        menu_obert = false
+        controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
     })
 }
 
+let menu_obert = false
+controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
+controller.moveSprite(nena, VELOCITAT_ATURADA, VELOCITAT_ATURADA)
 controller.A.onEvent(ControllerButtonEvent.Pressed, function on_a_pressed() {
     
+    if (menu_obert) {
+        return
+    }
+    
+    menu_obert = true
+    controller.moveSprite(nena, VELOCITAT_ATURADA, VELOCITAT_ATURADA)
     let items2 : miniMenu.MenuItem[] = []
     labels = ["Gallina", "Patata", "Cabra", "Ous", "Caball", "Veure Inventari", "Tancar Menú"]
     for (let l of labels) {
@@ -46,17 +64,26 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function on_a_pressed() {
         opcio2 = labels[selectedIndex]
         if (opcio2 == "Tancar Menú") {
             myMenu.close()
+            menu_obert = false
+            controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
         } else if (opcio2 == "Veure Inventari") {
             myMenu.close()
+            menu_obert = false
+            controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
             mostrar_inventari()
         } else {
             myMenu.close()
+            menu_obert = false
+            controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
             obrir_menu_quantitat(opcio2)
         }
         
     })
     myMenu.onButtonPressed(controller.B, function on_button_pressed4(selection22: any, selectedIndex2: any) {
+        
         myMenu.close()
+        menu_obert = false
+        controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
     })
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function on_left_pressed() {
@@ -156,7 +183,6 @@ let menu_quantitat : miniMenu.MenuSprite = null
 let opcions_text : string[] = []
 let opcions_vals : number[] = []
 let producte_seleccionat = ""
-let nena : Sprite = null
 let MODE_GAME = 0
 let kg_llenya = 0
 let BackPack : number[] = []
@@ -426,7 +452,7 @@ nena = sprites.create(assets.image`
     nena-front
     `, SpriteKind.Player)
 nena.setStayInScreen(true)
-controller.moveSprite(nena, 100, 100)
+controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
 game.onUpdate(function on_on_update() {
     let dist_left: number;
     let dist_right: number;
@@ -467,7 +493,7 @@ game.onUpdate(function on_on_update() {
                     Pots intercanviar-la per productes!
                     
                     Prem A per obrir el menú de conversió.
-                    Prem B per tencar els menús.
+                    Prem B o selecciona la opció de tornar per tencar els menús.
                     `, DialogLayout.Full)
             game.showLongText(`
                     TAULA DE CONVERSIO:
