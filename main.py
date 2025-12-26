@@ -19,6 +19,7 @@ controller.up.on_event(ControllerButtonEvent.PRESSED, on_up_pressed)
 def obrir_menu_quantitat(producte: str):
     global producte_seleccionat, opcions_vals, opcions_text, menu_quantitat, menu_obert
     menu_obert = True
+    controller.move_sprite(nena, VELOCITAT_ATURADA, VELOCITAT_ATURADA)
     items: List[miniMenu.MenuItem] = []
     producte_seleccionat = producte
 
@@ -52,7 +53,6 @@ def obrir_menu_quantitat(producte: str):
 
 menu_obert = False
 controller.move_sprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
-controller.move_sprite(nena, VELOCITAT_ATURADA, VELOCITAT_ATURADA)
 def on_a_pressed():
     global labels, myMenu, menu_obert
 
@@ -95,8 +95,6 @@ def on_a_pressed():
 
         else:
             myMenu.close()
-            menu_obert = False
-            controller.move_sprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
             obrir_menu_quantitat(opcio2)
     myMenu.on_button_pressed(controller.A, on_button_pressed3)
     
@@ -510,7 +508,8 @@ def on_on_update():
         elif min_dist == dist_bottom:
             nena.y = house_bottom + 5
 
-            game.show_long_text("""
+            game.show_long_text(""" 
+                              BON NADAL.
                     BENVINGUT/DA AL CONVERSOR RURAL!
                     
                     Tens 100 kg de llenya inicial.

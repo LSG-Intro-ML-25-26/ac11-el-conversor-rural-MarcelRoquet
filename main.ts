@@ -10,6 +10,7 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function on_up_pressed() {
 function obrir_menu_quantitat(producte: string) {
     
     menu_obert = true
+    controller.moveSprite(nena, VELOCITAT_ATURADA, VELOCITAT_ATURADA)
     let items : miniMenu.MenuItem[] = []
     producte_seleccionat = producte
     opcions_vals = [1, 2, 3, 5, 10]
@@ -42,7 +43,6 @@ function obrir_menu_quantitat(producte: string) {
 
 let menu_obert = false
 controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
-controller.moveSprite(nena, VELOCITAT_ATURADA, VELOCITAT_ATURADA)
 controller.A.onEvent(ControllerButtonEvent.Pressed, function on_a_pressed() {
     
     if (menu_obert) {
@@ -73,8 +73,6 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function on_a_pressed() {
             mostrar_inventari()
         } else {
             myMenu.close()
-            menu_obert = false
-            controller.moveSprite(nena, VELOCITAT_NORMAL, VELOCITAT_NORMAL)
             obrir_menu_quantitat(opcio2)
         }
         
@@ -486,7 +484,8 @@ game.onUpdate(function on_on_update() {
             nena.y = house_top - 5
         } else if (min_dist == dist_bottom) {
             nena.y = house_bottom + 5
-            game.showLongText(`
+            game.showLongText(` 
+                              BON NADAL.
                     BENVINGUT/DA AL CONVERSOR RURAL!
                     
                     Tens 100 kg de llenya inicial.
