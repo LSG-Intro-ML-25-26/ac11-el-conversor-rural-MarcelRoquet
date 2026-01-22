@@ -1,0 +1,24 @@
+{
+    "name": "ac11-el-conversor-rural-marcelroquet-tree-entrega",
+    "dependencies": {
+        "device": "*",
+        "ac11-el-conversor-rural-marcelroquet": "github:lsg-intro-ml-25-26/ac11-el-conversor-rural-marcelroquet"
+    },
+    "files": [
+        "main.blocks",
+        "main.ts",
+        "README.md",
+        "assets.json"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "targetVersions": {
+        "target": "2.0.63",
+        "targetId": "arcade"
+    },
+    "supportedTargets": [
+        "arcade"
+    ],
+    "preferredEditor": "blocksprj"
+}
